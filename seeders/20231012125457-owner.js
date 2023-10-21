@@ -1,74 +1,51 @@
+"use strict";
+
 const { User } = require("../models");
-("use strict");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await User.bulkCreate(
-      [
-        {
-          name: "papa",
-          age: 20,
-          address: "bogor",
-          type: "superadmin",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          name: "papi",
-          age: 42,
-          address: "tangerang",
-          type: "superadmin",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          name: "papo",
-          age: 20,
-          address: "jakarta",
-          type: "superadmin",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-      { returning: true }
-    ).then(function (newSuperadmin) {
-      const saltRounds = 10;
-      return queryInterface.bulkInsert("Auths", [
-        {
-          email: "papa@gmail.com",
-          password:
-            "$2a$10$YBdLRjQUf6tevvaPPjoE8usz8NThOWie.Y0nZc5vxHX8ARkb6OIeO",
-          confirmPassword:
-            "$2a$10$YBdLRjQUf6tevvaPPjoE8usz8NThOWie.Y0nZc5vxHX8ARkb6OIeO",
-          userId: newSuperadmin[0].id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          email: "papi@gmail.com",
-          password:
-            "$2a$10$/6hr/RdXKLjWYEqVQjcS0O.jsXU1GxnZQipMS8mTX0YOeM3YYsika",
-          confirmPassword:
-            "$2a$10$/6hr/RdXKLjWYEqVQjcS0O.jsXU1GxnZQipMS8mTX0YOeM3YYsika",
-          userId: newSuperadmin[1].id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          email: "papo@gmail.com",
-          password:
-            "$2a$10$2M5Ett7asTU2VWg0D6oYQ.yoME4nXnMp2U4bJhrLF5AHfmXrLQyDG",
-          confirmPassword:
-            "$2a$10$2M5Ett7asTU2VWg0D6oYQ.yoME4nXnMp2U4bJhrLF5AHfmXrLQyDG",
-          userId: newSuperadmin[2].id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ]);
-    });
+  async up(queryInterface, Sequelize) {
+    await queryInterface.bulkInsert("Users", [
+      {
+        name: "gilang",
+        age: 30,
+        address: "Jawa Tengah",
+        type: "superadmin",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Ale",
+        age: 23,
+        address: "medan",
+        type: "admin",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
+
+    const user = await User.findAll();
+
+    await queryInterface.bulkInsert("Auths", [
+      {
+        email: "gilang123@gmail.com",
+        password: "$2a$12$PUuZk8DDfcWls0iYy6bOQO7BG.Hcr6uS5LiG9MEja3fBTbWBlwaym",
+        userId: user[0].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        email: "ale123@gmail.com",
+        password: "$2a$12$SHdp5nb0p1LJQ9iMdOOqA.2svAGXy6q3Wx5Th3B.YyU3fvroZG64m",
+        userId: user[1].id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
   },
-  down: async (queryInterface, Sequelize) => {
+
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete("Users", null, {});
+    await queryInterface.bulkDelete("Auths", null, {});
   },
 };
