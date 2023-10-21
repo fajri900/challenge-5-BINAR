@@ -1,10 +1,22 @@
 const router = require("express").Router();
 
-const Authenticate = require("../middlewares/authenticate");
 const Auth = require("../controller/authController");
 
-router.post("/register", Auth.register);
-router.post("/login", Auth.login);
-router.get("/me", Auth.authenticate);
+const autentikasi = require("../middlewares/authenticate");
+const checkRole = require("../middlewares/checkRole");
+
+router.post("/admin/login", Auth.login);
+router.post(
+  "/admin/register",
+  autentikasi,
+  checkRole("superadmin"),
+  Auth.register
+);
+
+router.post("/member/login", Auth.login);
+router.post("/member/register", Auth.register);
+
+router.post("/superadmin/login", Auth.login);
+router.get("/", autentikasi, Auth.checkToken);
 
 module.exports = router;
